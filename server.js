@@ -28,6 +28,7 @@ app.get("/api/notes", (req, res) => {
     res.set("content-type", "application/json");
     res.sendFile(path.join(__dirname, "/db/db.json"));
 });
+
 //writes notes to db
 function noteWriter(notes) {
     fs.writeFile(
@@ -44,6 +45,16 @@ app.post("/api/notes", (req, res) => {
     noteList.push(note);
     noteWriter(noteList);
     res.send(note);
+  });
+//delete note if id number matches
+  app.delete("/api/notes/:uuid", (req, res) =>{
+    for(let i = 0; i < noteList.length; i++){
+      if (noteList[i].id === req.params.uuid){
+        noteList.splice(i, 1);
+      } 
+    }
+    noteWriter(noteList);
+    res.end();
   });
 //listener
 app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));
